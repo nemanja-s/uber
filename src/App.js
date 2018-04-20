@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-class App extends Component {
-  state = {
-    isAuthenticated: false
-  };
+import Home from './components/Home/Home';
+import Login from './components/Login/Login';
+import NoMatch from './components/NoMatch/NoMatch';
 
+class App extends Component {
   render() {
     return (
       <Switch>
-        <Route path='/' component={Home} />
+        <Route path='/' exact component={Home} />
+        <Route path='/login' exact component={Login} />
+        <Route component={NoMatch} />
       </Switch>
     );
   }
