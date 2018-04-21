@@ -1,3 +1,9 @@
 .MainDiv table {
     text-align: center;
 }
+
+.MainDiv tbody tr:hover {
+    color: white;
+    background-color: grey;
+    cursor: pointer;
+}

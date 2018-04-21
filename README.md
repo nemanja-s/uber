@@ -1,4 +1,4 @@
-# Project: todor
+# Project: uber
 ToDo app implemented with React.js on client side and https://jsonplaceholder.typicode.com/ fake RESTful API as backend
 
 # Scenarios

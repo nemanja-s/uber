@@ -10,7 +10,13 @@ class TaskList extends Component {
   componentDidMount() {
     fetch('https://jsonplaceholder.typicode.com/todos')
       .then(response => response.json())
-      .then(json => this.setState({tasks: json}))
+      .then(json => {
+        const newJSON = json.map(task => {
+          task.done = false;
+          return task
+        });
+        this.setState({tasks: newJSON})
+      })
       .catch(error => console.log(error))
   }
 
@@ -35,11 +41,25 @@ class TaskList extends Component {
     this.setState({tasks: newTasks})
   };
 
+  markTask = id => {
+    const newTasks = this.state.tasks.map(task => {
+      if (task.id === id) {
+        task.done = true;
+        return task
+      }
+      return task
+    });
+    this.setState({tasks: newTasks})
+  };
+
   render() {
-    let tasks = this.state.tasks.map(task =>(
+    let tasks = this.state.tasks.map(task => (
       <tr key={task.id}>
         <td>{task.id}</td>
-        <td>{task.title}</td>
+        { task.done ?
+        <td><del>{task.title}</del></td> :
+        <td>{task.title}</td> }
+        <td><button onClick={() => this.markTask(task.id)}>Done</button></td>
         <td><button onClick={() => this.deleteTask(task.id)}>Delete</button></td>
       </tr>
     ));
