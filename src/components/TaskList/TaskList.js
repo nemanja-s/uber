@@ -3,7 +3,8 @@ import classes from './TaksList.css';
 
 class TaskList extends Component {
   state = {
-    tasks: []
+    tasks: [],
+    id: 201
   };
 
   componentDidMount() {
@@ -12,6 +13,22 @@ class TaskList extends Component {
       .then(json => this.setState({tasks: json}))
       .catch(error => console.log(error))
   }
+
+  addTask = () => {
+    if (this.task.value === '') {
+      return
+    }
+    const newTask = [{
+      id: this.state.id,
+      title: this.task.value
+    }];
+    const newTasks = this.state.tasks.concat(newTask);
+    this.setState({
+      tasks: newTasks,
+      id: this.state.id + 1
+    });
+    this.task.value = '';
+  };
 
   deleteTask = id => {
     const newTasks = this.state.tasks.filter(task => (task.id !== id));
@@ -29,6 +46,8 @@ class TaskList extends Component {
 
     return (
       <div className={classes.MainDiv}>
+        <input type='text' placeholder='New Task' ref={input => this.task = input} />
+        <button onClick={this.addTask}>Add new task</button>
         <table>
           <thead>
             <tr>
@@ -40,7 +59,6 @@ class TaskList extends Component {
             {tasks}
           </tbody>
         </table>
-        <button onClick={() => console.log(this.state.tasks)}>JSON</button>
       </div>
     )
   }
