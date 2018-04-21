@@ -2,11 +2,14 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux'
 
+import TaskList from '../TaskList/TaskList';
+
+
 const home = (props) => (
   <div>
     {
       props.isAuthenticated ?
-      <p>You are admin</p> :
+      <TaskList/> :
       <Redirect to='/login' />
     }
   </div>
