@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+
 import classes from './TaksList.css';
 
 class TaskList extends Component {
@@ -13,6 +15,7 @@ class TaskList extends Component {
       .then(json => {
         const newJSON = json.map(task => {
           task.done = false;
+          task.assigned = 'None';
           return task
         });
         this.setState({tasks: newJSON})
@@ -26,7 +29,8 @@ class TaskList extends Component {
     }
     const newTask = [{
       id: this.state.id,
-      title: this.task.value
+      title: this.task.value,
+      assigned: 'None'
     }];
     const newTasks = this.state.tasks.concat(newTask);
     this.setState({
@@ -54,11 +58,12 @@ class TaskList extends Component {
 
   render() {
     let tasks = this.state.tasks.map(task => (
-      <tr key={task.id}>
+      <tr key={task.id} onClick={() => this.props.history.push('/edit')}>
         <td>{task.id}</td>
         { task.done ?
         <td><del>{task.title}</del></td> :
         <td>{task.title}</td> }
+        <td>{task.assigned}</td>
         <td><button onClick={() => this.markTask(task.id)}>Done</button></td>
         <td><button onClick={() => this.deleteTask(task.id)}>Delete</button></td>
       </tr>
@@ -73,6 +78,7 @@ class TaskList extends Component {
             <tr>
               <th>id</th>
               <th>description</th>
+              <th>assigned to</th>
             </tr>
           </thead>
           <tbody>
@@ -84,4 +90,4 @@ class TaskList extends Component {
   }
 }
 
-export default TaskList;
+export default withRouter(TaskList);

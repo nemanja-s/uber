@@ -1,5 +1,15 @@
-.MainDiv table {
+.MainDiv {
+    width: 50%;
+    margin: 1rem auto;
     text-align: center;
+}
+
+.MainDiv input {
+    margin-bottom: 1rem;
+}
+
+.MainDiv tbody td {
+    padding: .3rem;
 }
 
 .MainDiv tbody tr:hover {
