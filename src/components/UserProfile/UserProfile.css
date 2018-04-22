@@ -1,0 +1,13 @@
+.MainDiv {
+    width: 350px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.MainDiv button {
+    margin-left: 5px;
+}
+
+.MainDiv input {
+    width: 200px;
+}

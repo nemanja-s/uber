@@ -17,7 +17,7 @@ class Login extends Component {
     return (
       <div className={classes.MainDiv}>
         <label>Username</label>
-        <input type='text' ref={input => this.username = input} />
+        <input type='text' ref={input => this.username = input} autoFocus/>
         <label>Password</label>
         <input type='password' ref={input => this.password = input} />
         <button onClick={this.dataChecker}>Login</button>

@@ -1,7 +1,9 @@
 import * as actionTypes from './actions';
 
 const initialState = {
-  isAuthenticated: false
+  isAuthenticated: false,
+  tasks: [],
+  id: 11
 };
 
 const reducer = (state = initialState, action) => {
@@ -10,6 +12,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isAuthenticated: action.value
+      };
+    case actionTypes.SET_TASKS:
+      return {
+        ...state,
+        tasks: action.value
+      };
+    case actionTypes.SET_ID:
+      return {
+        ...state,
+        id: action.value
       };
     default:
       return state

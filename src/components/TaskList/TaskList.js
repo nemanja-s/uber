@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 import classes from './TaksList.css';
 
 class TaskList extends Component {
   state = {
-    tasks: [],
-    id: 201
+    id: 11
   };
 
   componentDidMount() {
     fetch('https://jsonplaceholder.typicode.com/todos')
       .then(response => response.json())
       .then(json => {
-        const newJSON = json.map(task => {
+        const newJSON = json.slice(0, 10).map(task => {
           task.done = false;
           task.assigned = 'None';
           return task
         });
-        this.setState({tasks: newJSON})
+        console.log(newJSON);
+        this.props.setTasks(newJSON)
       })
       .catch(error => console.log(error))
   }
@@ -28,42 +30,40 @@ class TaskList extends Component {
       return
     }
     const newTask = [{
-      id: this.state.id,
+      id: this.props.id,
       title: this.task.value,
       assigned: 'None'
     }];
-    const newTasks = this.state.tasks.concat(newTask);
-    this.setState({
-      tasks: newTasks,
-      id: this.state.id + 1
-    });
+    const newTasks = this.props.tasks.concat(newTask);
+    this.props.setTasks(newTasks);
+    this.props.setId(this.props.id + 1);
     this.task.value = '';
   };
 
   deleteTask = id => {
-    const newTasks = this.state.tasks.filter(task => (task.id !== id));
-    this.setState({tasks: newTasks})
+    const newTasks = this.props.tasks.filter(task => (task.id !== id));
+    this.props.setTasks(newTasks)
   };
 
   markTask = id => {
-    const newTasks = this.state.tasks.map(task => {
+    const newTasks = this.props.tasks.map(task => {
       if (task.id === id) {
         task.done = true;
         return task
       }
       return task
     });
-    this.setState({tasks: newTasks})
+    this.props.setTasks(newTasks)
   };
 
   render() {
-    let tasks = this.state.tasks.map(task => (
-      <tr key={task.id} onClick={() => this.props.history.push('/edit')}>
-        <td>{task.id}</td>
+    let tasks = this.props.tasks.map(task => (
+      <tr key={task.id}>
+        <td onClick={() => this.props.history.push('/edit')}>{task.id}</td>
         { task.done ?
-        <td><del>{task.title}</del></td> :
-        <td>{task.title}</td> }
-        <td>{task.assigned}</td>
+        <td onClick={() => this.props.history.push('/edit')}><del>{task.title}</del></td> :
+        <td onClick={() => this.props.history.push('/edit')}>{task.title}</td> }
+        <td onClick={() => this.props.history.push('/edit')}>{task.assigned}</td>
         <td><button onClick={() => this.markTask(task.id)}>Done</button></td>
         <td><button onClick={() => this.deleteTask(task.id)}>Delete</button></td>
       </tr>
@@ -71,8 +71,7 @@ class TaskList extends Component {
 
     return (
       <div className={classes.MainDiv}>
-        <input type='text' placeholder='New Task' ref={input => this.task = input} />
-        <button onClick={this.addTask}>Add new task</button>
+        <h2>Task List</h2>
         <table>
           <thead>
             <tr>
@@ -85,9 +84,25 @@ class TaskList extends Component {
             {tasks}
           </tbody>
         </table>
+        <input type='text' placeholder='New Task' ref={input => this.task = input} />
+        <button onClick={this.addTask}>Add new task</button>
       </div>
     )
   }
 }
 
-export default withRouter(TaskList);
+const mapStateToProps = state => {
+  return {
+    tasks: state.tasks,
+    id: state.id
+  }
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setTasks: (tasks) => dispatch({type: actionTypes.SET_TASKS, value: tasks}),
+    setId: (id) => dispatch({type: actionTypes.SET_ID, value: id})
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TaskList));

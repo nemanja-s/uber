@@ -1,15 +1,18 @@
 .MainDiv {
-    width: 50%;
-    margin: 1rem auto;
     text-align: center;
 }
 
 .MainDiv input {
-    margin-bottom: 1rem;
+    margin-bottom: 10px;
+}
+
+.MainDiv table {
+    width: 800px;
+    margin: 20px auto;
 }
 
 .MainDiv tbody td {
-    padding: .3rem;
+    padding: 3px;
 }
 
 .MainDiv tbody tr:hover {
