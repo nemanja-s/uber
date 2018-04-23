@@ -17,7 +17,8 @@ class TaskList extends Component {
             task.assigned = 'None';
             return task
           });
-          this.props.setTasks(newJSON)
+          this.props.setTasks(newJSON);
+          console.log(newJSON);
         })
         .catch(error => console.log(error))
     }
@@ -64,15 +65,20 @@ class TaskList extends Component {
     this.props.addingTask(newAddedTasks);
   };
 
+  editTask = (id) => {
+    this.props.selectTaskId(id);
+    this.props.history.push('/edit-task');
+  };
+
   render() {
     const allTasks = this.props.tasks.concat(this.props.addedTasks);
     const previewTasks = allTasks.map(task => (
       <tr key={task.id}>
-        <td onClick={() => this.props.history.push('/edit-task')}>{task.id}</td>
+        <td onClick={() => this.editTask(task.id)}>{task.id}</td>
         { task.done ?
-        <td onClick={() => this.props.history.push('/edit-task')}><del>{task.title}</del></td> :
-        <td onClick={() => this.props.history.push('/edit-task')}>{task.title}</td> }
-        <td onClick={() => this.props.history.push('/edit-task')}>{task.assigned}</td>
+        <td onClick={() => this.editTask(task.id)}><del>{task.title}</del></td> :
+        <td onClick={() => this.editTask(task.id)}>{task.title}</td> }
+        <td onClick={() => this.editTask(task.id)}>{task.assigned}</td>
         <td><button onClick={() => this.markTask(task.id)}>Done</button></td>
         <td><button onClick={() => this.deleteTask(task.id)}>Delete</button></td>
       </tr>
@@ -112,7 +118,8 @@ const mapDispatchToProps = dispatch => {
   return {
     setTasks: (tasks) => dispatch({type: actionTypes.SET_TASKS, value: tasks}),
     setId: (id) => dispatch({type: actionTypes.SET_ID, value: id}),
-    addingTask: (task) => dispatch({type: actionTypes.ADDING_TASK, value: task})
+    addingTask: (task) => dispatch({type: actionTypes.ADDING_TASK, value: task}),
+    selectTaskId: (id) => dispatch({type: actionTypes.SELECT_TASK_ID, value: id})
   }
 };
 

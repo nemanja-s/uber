@@ -4,7 +4,10 @@ const initialState = {
   isAuthenticated: false,
   tasks: [],
   addedTasks: [],
-  id: 11
+  id: 11,
+  selectedTaskId: null,
+  users: [],
+  selectedUserId: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -28,6 +31,21 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         addedTasks: action.value
+      };
+    case actionTypes.SELECT_TASK_ID:
+      return {
+        ...state,
+        selectedTaskId: action.value
+      };
+    case actionTypes.SET_USERS:
+      return {
+        ...state,
+        users: action.value
+      };
+    case actionTypes.SELECT_USER:
+      return {
+        ...state,
+        selectedUserId: action.value
       };
     default:
       return state

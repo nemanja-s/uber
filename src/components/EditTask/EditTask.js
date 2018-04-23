@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
-import classes from './UserProfile.css';
+import { connect } from 'react-redux';
 
-class UserProfile extends Component {
-  state = {
-    users: [],
-    selectedUser: null
-  };
+import classes from './EditTask.css';
+import * as actionTypes from '../../store/actions';
 
+
+class EditTask extends Component {
   componentDidMount() {
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
-      .then(json => this.setState({users: json}))
+      .then(json => this.props.setUsers(json))
       .catch(error => console.log(error))
   }
+
+  saveButtonHandler = () => {
+    console.log('User ID: ' + this.props.selectedUserId, 'Task ID: ' + this.props.selectedTaskId)
+  };
+
+  cancelButtonHandler = () => {
+    this.props.history.push('/')
+  };
 
   render() {
     return (
@@ -23,19 +30,19 @@ class UserProfile extends Component {
         <p>Asigned to: </p>
         <select
           ref={select => this.user = select}
-          onChange={() => this.setState({selectedUser: Number(this.user.value)})}>
-          <option value='' disabled selected>-- select user --</option>
-          {this.state.users.map(user => (
+          onChange={() => this.props.selectUser(Number(this.user.value))}>
+          <option value=''>-- None --</option>
+          {this.props.users.map(user => (
             <option
               value={user.id}
               key={user.id}>{user.name}</option>
           ))}
         </select>
-        <button onClick={() => this.props.history.push('/')}>Save</button>
-        <button onClick={() => this.props.history.push('/')}>Cancel</button>
+        <button onClick={this.saveButtonHandler}>Save</button>
+        <button onClick={this.cancelButtonHandler}>Cancel</button>
         {
-          this.state.users.map(user => {
-            if (this.state.selectedUser === user.id) {
+          this.props.users.map(user => {
+            if (this.props.selectedUserId === user.id) {
               return (
                 <div>
                   <p><b>More details about user:</b></p>
@@ -57,4 +64,19 @@ class UserProfile extends Component {
   }
 }
 
-export default UserProfile;
+const mapStateToProps = state => {
+  return {
+    selectedTaskId: state.selectedTaskId,
+    users: state.users,
+    selectedUserId: state.selectedUserId
+  }
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setUsers: (users) => dispatch({type: actionTypes.SET_USERS, value: users}),
+    selectUser: (userId) => dispatch({type: actionTypes.SELECT_USER, value: userId})
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditTask);
