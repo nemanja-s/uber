@@ -3,7 +3,6 @@ import * as actionTypes from './actions';
 const initialState = {
   isAuthenticated: false,
   tasks: [],
-  addedTasks: [],
   id: 11,
   selectedTaskId: null,
   users: [],
@@ -22,15 +21,10 @@ const reducer = (state = initialState, action) => {
         ...state,
         tasks: action.value
       };
-    case actionTypes.SET_ID:
+    case actionTypes.SET_NEXT_ID:
       return {
         ...state,
         id: action.value
-      };
-    case actionTypes.ADDING_TASK:
-      return {
-        ...state,
-        addedTasks: action.value
       };
     case actionTypes.SELECT_TASK_ID:
       return {
@@ -42,7 +36,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         users: action.value
       };
-    case actionTypes.SELECT_USER:
+    case actionTypes.SELECT_USER_ID:
       return {
         ...state,
         selectedUserId: action.value

@@ -4,6 +4,7 @@
 
 .MainDiv input {
     margin-bottom: 10px;
+    width: 370px;
 }
 
 .MainDiv table {
@@ -19,4 +20,9 @@
     color: white;
     background-color: grey;
     cursor: pointer;
+}
+
+.MainDiv button {
+    margin-left: 5px;
+    width: 70px;
 }

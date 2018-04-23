@@ -13,20 +13,38 @@ class EditTask extends Component {
       .catch(error => console.log(error))
   }
 
-  saveButtonHandler = () => {
-    console.log('User ID: ' + this.props.selectedUserId, 'Task ID: ' + this.props.selectedTaskId)
-  };
-
-  cancelButtonHandler = () => {
+  saveTaskHandler = () => {
+    const selectedUser = this.props.users[this.props.selectedUserId - 1].name;
+    const allTasks = [...this.props.tasks];
+    const selectedTask = allTasks[Number(this.props.selectedTaskId) - 1];
+    selectedTask.assigned = selectedUser;
+    this.props.setTasks(allTasks);
+    this.props.selectUser(null);
     this.props.history.push('/')
   };
 
+  cancelTaskHandler = () => {
+    this.props.selectUser(null);
+    this.props.history.push('/')
+  };
+
+  changeTaskHandler = () => {
+    if (this.title.value !== '') {
+      const allTasks = [...this.props.tasks];
+      const selectedTask = allTasks[Number(this.props.selectedTaskId) - 1];
+      selectedTask.title = this.title.value;
+      this.props.setTasks(allTasks);
+      this.title.value = '';
+    }
+  };
+
   render() {
+    const taskTitle = this.props.tasks[Number(this.props.selectedTaskId) - 1].title;
     return (
       <div className={classes.MainDiv}>
         <label><b>Task: </b></label>
-        <input type='text' placeholder='TASK FROM REDUX' />
-        <button>Change</button>
+        <input type='text' placeholder={taskTitle} ref={input => this.title = input}/>
+        <button onClick={this.changeTaskHandler}>Change</button>
         <p>Asigned to: </p>
         <select
           ref={select => this.user = select}
@@ -38,8 +56,8 @@ class EditTask extends Component {
               key={user.id}>{user.name}</option>
           ))}
         </select>
-        <button onClick={this.saveButtonHandler}>Save</button>
-        <button onClick={this.cancelButtonHandler}>Cancel</button>
+        <button onClick={this.saveTaskHandler}>Save</button>
+        <button onClick={this.cancelTaskHandler}>Cancel</button>
         {
           this.props.users.map(user => {
             if (this.props.selectedUserId === user.id) {
@@ -68,14 +86,16 @@ const mapStateToProps = state => {
   return {
     selectedTaskId: state.selectedTaskId,
     users: state.users,
-    selectedUserId: state.selectedUserId
+    selectedUserId: state.selectedUserId,
+    tasks: state.tasks
   }
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     setUsers: (users) => dispatch({type: actionTypes.SET_USERS, value: users}),
-    selectUser: (userId) => dispatch({type: actionTypes.SELECT_USER, value: userId})
+    selectUser: (userId) => dispatch({type: actionTypes.SELECT_USER_ID, value: userId}),
+    setTasks: (tasks) => dispatch({type: actionTypes.SET_TASKS, value: tasks})
   }
 };
 
