@@ -18,6 +18,7 @@ class TaskList extends Component {
             return task
           });
           this.props.setTasks(newJSON);
+          console.log(newJSON)
         })
         .catch(error => console.log(error))
     }

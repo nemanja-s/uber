@@ -16,7 +16,8 @@ class EditTask extends Component {
   saveTaskHandler = () => {
     const selectedUser = this.props.users[this.props.selectedUserId - 1].name;
     const allTasks = [...this.props.tasks];
-    const selectedTask = allTasks[Number(this.props.selectedTaskId) - 1];
+    const selectedTask = allTasks.find(task =>
+      task.id === Number(this.props.selectedTaskId));
     selectedTask.assigned = selectedUser;
     this.props.setTasks(allTasks);
     this.props.selectUser(null);
@@ -31,7 +32,8 @@ class EditTask extends Component {
   changeTaskHandler = () => {
     if (this.title.value !== '') {
       const allTasks = [...this.props.tasks];
-      const selectedTask = allTasks[Number(this.props.selectedTaskId) - 1];
+      const selectedTask = allTasks.find(task =>
+        task.id === Number(this.props.selectedTaskId));
       selectedTask.title = this.title.value;
       this.props.setTasks(allTasks);
       this.title.value = '';
@@ -39,7 +41,8 @@ class EditTask extends Component {
   };
 
   render() {
-    const taskTitle = this.props.tasks[Number(this.props.selectedTaskId) - 1].title;
+    const taskTitle = this.props.tasks.find(task =>
+      task.id === Number(this.props.selectedTaskId)).title;
     return (
       <div className={classes.MainDiv}>
         <label><b>Task: </b></label>
