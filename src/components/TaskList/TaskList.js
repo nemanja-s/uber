@@ -5,24 +5,22 @@ import * as actionTypes from '../../store/actions';
 
 import classes from './TaksList.css';
 
-class TaskList extends Component {
-  state = {
-    id: 11
-  };
 
+class TaskList extends Component {
   componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/todos')
-      .then(response => response.json())
-      .then(json => {
-        const newJSON = json.slice(0, 10).map(task => {
-          task.done = false;
-          task.assigned = 'None';
-          return task
-        });
-        console.log(newJSON);
-        this.props.setTasks(newJSON)
-      })
-      .catch(error => console.log(error))
+    if (this.props.tasks.length === 0) {
+      fetch('https://jsonplaceholder.typicode.com/todos')
+        .then(response => response.json())
+        .then(json => {
+          const newJSON = json.slice(0, 10).map(task => {
+            task.done = false;
+            task.assigned = 'None';
+            return task
+          });
+          this.props.setTasks(newJSON)
+        })
+        .catch(error => console.log(error))
+    }
   }
 
   addTask = () => {
@@ -34,15 +32,17 @@ class TaskList extends Component {
       title: this.task.value,
       assigned: 'None'
     }];
-    const newTasks = this.props.tasks.concat(newTask);
-    this.props.setTasks(newTasks);
+    const allAddedTasks = this.props.addedTasks.concat(newTask);
+    this.props.addingTask(allAddedTasks);
     this.props.setId(this.props.id + 1);
     this.task.value = '';
   };
 
   deleteTask = id => {
     const newTasks = this.props.tasks.filter(task => (task.id !== id));
-    this.props.setTasks(newTasks)
+    this.props.setTasks(newTasks);
+    const newAddedTasks = this.props.addedTasks.filter(task => (task.id !==id));
+    this.props.addingTask(newAddedTasks);
   };
 
   markTask = id => {
@@ -53,17 +53,26 @@ class TaskList extends Component {
       }
       return task
     });
-    this.props.setTasks(newTasks)
+    this.props.setTasks(newTasks);
+    const newAddedTasks = this.props.addedTasks.map(task => {
+      if (task.id === id) {
+        task.done = true;
+        return task
+      }
+      return task
+    });
+    this.props.addingTask(newAddedTasks);
   };
 
   render() {
-    let tasks = this.props.tasks.map(task => (
+    const allTasks = this.props.tasks.concat(this.props.addedTasks);
+    const previewTasks = allTasks.map(task => (
       <tr key={task.id}>
-        <td onClick={() => this.props.history.push('/edit')}>{task.id}</td>
+        <td onClick={() => this.props.history.push('/edit-task')}>{task.id}</td>
         { task.done ?
-        <td onClick={() => this.props.history.push('/edit')}><del>{task.title}</del></td> :
-        <td onClick={() => this.props.history.push('/edit')}>{task.title}</td> }
-        <td onClick={() => this.props.history.push('/edit')}>{task.assigned}</td>
+        <td onClick={() => this.props.history.push('/edit-task')}><del>{task.title}</del></td> :
+        <td onClick={() => this.props.history.push('/edit-task')}>{task.title}</td> }
+        <td onClick={() => this.props.history.push('/edit-task')}>{task.assigned}</td>
         <td><button onClick={() => this.markTask(task.id)}>Done</button></td>
         <td><button onClick={() => this.deleteTask(task.id)}>Delete</button></td>
       </tr>
@@ -81,7 +90,7 @@ class TaskList extends Component {
             </tr>
           </thead>
           <tbody>
-            {tasks}
+            {previewTasks}
           </tbody>
         </table>
         <input type='text' placeholder='New Task' ref={input => this.task = input} />
@@ -94,6 +103,7 @@ class TaskList extends Component {
 const mapStateToProps = state => {
   return {
     tasks: state.tasks,
+    addedTasks: state.addedTasks,
     id: state.id
   }
 };
@@ -101,7 +111,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setTasks: (tasks) => dispatch({type: actionTypes.SET_TASKS, value: tasks}),
-    setId: (id) => dispatch({type: actionTypes.SET_ID, value: id})
+    setId: (id) => dispatch({type: actionTypes.SET_ID, value: id}),
+    addingTask: (task) => dispatch({type: actionTypes.ADDING_TASK, value: task})
   }
 };
 

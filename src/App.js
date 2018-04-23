@@ -12,7 +12,7 @@ class App extends Component {
       <Switch>
         <Route path='/' exact component={Home} />
         <Route path='/login' exact component={Login} />
-        <Route path='/edit' exact component={UserProfile} />
+        <Route path='/edit-task' exact component={UserProfile} />
         <Route component={NoMatch} />
       </Switch>
     );
